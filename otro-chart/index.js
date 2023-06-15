@@ -10,79 +10,122 @@
 //  getBlockchain()
 
 const getBlockchain = async () => {
-    try {
-      const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false');
-      if (!response.ok) {
-        throw new Error('Error en la solicitud: ' + response.status);
-      }
-      const data = await response.json();
-      renderChart(data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false');
+  const data = await response.json();
+  displaychart(data)
   };
   
   getBlockchain();
-  
-  const renderChart = (data) => {
-    // Extrae los nombres de las criptomonedas y sus valores de mercado
-    const labels = data.map((coin) => coin.name);
-    const marketCaps = data.map((coin) => coin.market_cap);
-  
-    // Configura los datos y opciones del gráfico de barras
-    const chartData = {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Valor de mercado (USD)',
-          data: marketCaps,
-          backgroundColor: 'rgba(54, 162, 235, 0.5)', // Color de fondo de las barras
-          borderColor: 'rgba(54, 162, 235, 1)', // Color del borde de las barras
-          borderWidth: 1
-        }
-      ]
-    };
-  
-    const chartOptions = {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function (value, index, values) {
-              // Formatea los valores de los ejes y añade una etiqueta de unidad
-              return '$' + value.toLocaleString();
-            }
-          }
-        }
-      }
-    };
-  
-    // Renderiza el gráfico utilizando Chart.js
-    const ctx = document.getElementById('myChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: chartData,
-      options: chartOptions
-    });
-  };
-  
 
-// Block Chain
+const displaychart = (data) => {
+     const chart = document.getElementById('myChart')
+
+      const labels = data.map((coin) => coin.name);
+     const marketCaps = data.map((coin) => coin.market_cap);
+
+      new Chart(chart, {
+         type: 'bar',
+         data: {
+           labels: labels,
+           datasets: [{
+             label: 'Valor de Mercado en USD',
+             data: marketCaps,
+             borderWidth: 1
+           }]
+         },
+         options: {
+           scales: {
+               y: {
+               beginAtZero: true
+            }
+           }
+         }
+       });
+
+}
+
+
+// Block Chain- No trae datos importantes
 // https://docs.helium.com/api/blockchain/chain-variables
-//  const getAPI = async() =>{
-//      const response = await fetch('https://api.helium.io/v1/vars')
-//      const data = await response.json()
-//      console.log(data.data)
-//  }
-//  getAPI()
+
 
 //Currency RATES API
 // https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/2022-11-24/currencies/eur.json
   
-//  const getCurrency = async() =>{
-//      const response = await fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/2022-11-24/currencies/eur.json')
-//      const data = await response.json()
-//      console.log(data)
-//  }
-//  getCurrency()
+  const getCurrency = async() =>{
+      const response = await fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/2022-11-24/currencies/eur.json')
+      const datos = await response.json()
+      console.log(datos.eur)
+      renderchart(datos)
+  }
+ getCurrency()
+
+ const renderchart = (datos) => {
+  const chart = document.getElementById('myChart2')
+
+  const dates = Object.keys(datos);
+  console.log(dates)
+  const exchangeRates = datos.eur
+  console.log(exchangeRates)
+
+
+   new Chart(chart, {
+      type: 'bar',
+      data: {
+        labels: dates,
+        datasets: [{
+          label: 'Tasa de cambio EUR',
+          data: exchangeRates,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+            y: {
+            beginAtZero: true
+         }
+        }
+      }
+    });
+
+}
+
+//API Historica del bitcoin- Nosirve
+//https://api.coindesk.com/v1/bpi/historical/close.json
+
+ const getRestaurantes = async() =>{
+   const response = await fetch('https://restcountries.com/v3.1/all')
+   const data = await response.json()
+   console.log(data)
+  renderizarchart(data)
+ }
+ getRestaurantes(); 
+
+
+const renderizarchart = (data) => {
+   const chart = document.getElementById('myChart3')
+
+const countries = data.map((country) => country.name.common);
+const populations = data.map((country) => country.population);
+
+
+    new Chart(chart, {
+       type: 'bar',
+       data: {
+         labels: countries,
+         datasets: [{
+           label: 'Población',
+           data: populations,
+           borderWidth: 1
+         }]
+       },
+       options: {
+         scales: {
+             y: {
+             beginAtZero: true
+          }
+         }
+       }
+     });
+ }
+
